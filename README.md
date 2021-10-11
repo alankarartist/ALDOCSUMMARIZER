@@ -18,5 +18,6 @@ pip install Pillow
 
 ![](/CaptureDocSummarizer_2.jpg)
 
-1. Provide the input as given in above image.
+1. Click on DOCUMENT TO BE SUMMARIZED button and select the .docx or .pdf file.
+2. Provide number of lines in which you want to summarize the document.
 2. Then, click on SUMMARIZE button.

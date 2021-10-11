@@ -6,7 +6,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 import re, os
 from tkinter import *
-from tkinter import font
+from tkinter import font, filedialog
 from PIL import ImageTk, Image
 
 cwd = os.path.dirname(os.path.realpath(__file__))
@@ -35,9 +35,14 @@ class AlDocSummarizer():
             root.overrideredirect(0)
             root.iconify()
 
+        def openDoc():
+            fileTextEntry.delete(1.0, END)
+            filename = filedialog.askopenfilename(filetypes =[('Document Files', '*.docx'), ('PDF Files', '*.pdf, *.PDF')])
+            fileTextEntry.insert(1.0, filename)
+
         def summarize():
-            filename = fileText.get()
-            filepath = os.path.join(cwd+'\\AlDocSummarizer', filename)
+            filepath = fileTextEntry.get("1.0", END)
+            filepath = filepath.replace('/', '\\')[:-1]
             if os.path.exists(filepath):
                 articleText = ''	
                 extension = os.path.splitext(filepath)[1]
@@ -83,8 +88,9 @@ class AlDocSummarizer():
                                         sentenceScores[sent] += wordFrequencies[word]
 
                     summarySentences = heapq.nlargest(int(lines.get()), sentenceScores, key=sentenceScores.get)
+                    summaryFileName = os.path.basename(filepath)
+                    summaryFileName = summaryFileName.replace(extension,'')
                     extension = extension.replace('.','')
-                    summaryFileName = filename.replace(os.path.splitext(filename)[1],'')
                     summaryFileName = f'{summaryFileName}_{extension}_summarized.txt'
                     summaryFilePath = os.path.join(cwd+'\\AlDocSummarizer\\Summarize', summaryFileName)
                     summaryFile = open(summaryFilePath, "w")
@@ -125,11 +131,11 @@ class AlDocSummarizer():
         titleBar.pack(fill=X)
 
         #file widget
-        fileText = Label(root, text="DOCUMENT TO BE SUMMARIZED")
-        fileText.pack()
-        fileText.config(bg=color,fg="white",font=appHighlightFont)
-        fileText= Entry(root, bg="white", fg=color, highlightbackground=color, highlightcolor=color, highlightthickness=3, bd=0,font=textHighlightFont)
+        fileText = Button(root, text="DOCUMENT TO BE SUMMARIZED", borderwidth=0, highlightthickness=3, command=openDoc)
         fileText.pack(fill=X)
+        fileText.config(bg=color,fg="white",font=appHighlightFont)
+        fileTextEntry = Text(root, bg="white", fg=color, highlightbackground=color, highlightcolor=color, highlightthickness=3, bd=0,font=textHighlightFont, height=1)
+        fileTextEntry.pack(fill=BOTH, expand=True)
 
         #lines widget
         lines = Label(root, text="NUMBER OF LINES IN WHICH DOCUMENT HAS TO SUMMARIZED")
