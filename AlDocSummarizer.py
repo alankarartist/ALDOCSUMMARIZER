@@ -7,10 +7,12 @@ from tkinter import Tk, END, Frame, SUNKEN, Button, Entry
 from tkinter import font, filedialog, BOTH, X, Label, Text
 from PIL import ImageTk, Image
 import nltk
+import platform
 
 nltk.download('punkt')
 nltk.download('stopwords')
 cwd = os.path.dirname(os.path.realpath(__file__))
+systemName = platform.system()
 
 
 class AlDocSummarizer():
@@ -18,7 +20,11 @@ class AlDocSummarizer():
         root = Tk(className=" ALDOCSUMMARIZER ")
         root.geometry("550x250+1350+765")
         root.resizable(0, 0)
-        root.iconbitmap(os.path.join(cwd+'\\UI\\icons', 'aldocsummarizer.ico'))
+        iconPath = os.path.join(cwd+'\\UI\\icons',
+                                'aldocsummarizer.ico')
+        if systemName == 'Darwin':
+            iconPath = iconPath.replace('\\','/')
+        root.iconbitmap(iconPath)
         root.config(bg="#0098c0")
         root.overrideredirect(1)
         color = '#0098c0'
@@ -52,6 +58,8 @@ class AlDocSummarizer():
         def summarize():
             filepath = fileTextEntry.get("1.0", END)
             filepath = filepath.replace('/', '\\')[:-1]
+            if systemName == 'Darwin':
+                filepath = filepath.replace('\\','/')
             if os.path.exists(filepath):
                 articleText = ''
                 extension = os.path.splitext(filepath)[1]
@@ -109,6 +117,8 @@ class AlDocSummarizer():
                     summaryFilePath = os.path.join(cwd+'\\AlDocSummarizer\\' +
                                                    'Summarize',
                                                    summaryFileName)
+                    if systemName == 'Darwin':
+                        summaryFilePath = summaryFilePath.replace('\\','/')
                     summaryFile = open(summaryFilePath, "w")
                     summaryFile.writelines(summarySentences)
                     summaryFile.close()
@@ -130,8 +140,7 @@ class AlDocSummarizer():
                                      weight='bold')
 
         titleBar = Frame(root, bg='#141414', relief=SUNKEN, bd=0)
-        icon = Image.open(os.path.join(cwd+'\\UI\\icons',
-                                       'aldocsummarizer.ico'))
+        icon = Image.open(iconPath)
         icon = icon.resize((30, 30), Image.ANTIALIAS)
         icon = ImageTk.PhotoImage(icon)
         iconLabel = Label(titleBar, image=icon)
