@@ -7,12 +7,10 @@ from tkinter import Tk, END, Frame, SUNKEN, Button, Entry
 from tkinter import font, filedialog, BOTH, X, Label, Text
 from PIL import ImageTk, Image
 import nltk
-import platform
 
 nltk.download('punkt')
 nltk.download('stopwords')
 cwd = os.path.dirname(os.path.realpath(__file__))
-systemName = platform.system()
 
 
 class AlDocSummarizer():
@@ -22,8 +20,6 @@ class AlDocSummarizer():
         root.resizable(0, 0)
         iconPath = os.path.join(cwd+'\\UI\\icons',
                                 'aldocsummarizer.ico')
-        if systemName == 'Darwin':
-            iconPath = iconPath.replace('\\','/')
         root.iconbitmap(iconPath)
         root.config(bg="#0098c0")
         root.overrideredirect(1)
@@ -58,8 +54,6 @@ class AlDocSummarizer():
         def summarize():
             filepath = fileTextEntry.get("1.0", END)
             filepath = filepath.replace('/', '\\')[:-1]
-            if systemName == 'Darwin':
-                filepath = filepath.replace('\\','/')
             if os.path.exists(filepath):
                 articleText = ''
                 extension = os.path.splitext(filepath)[1]
@@ -117,8 +111,6 @@ class AlDocSummarizer():
                     summaryFilePath = os.path.join(cwd+'\\AlDocSummarizer\\' +
                                                    'Summarize',
                                                    summaryFileName)
-                    if systemName == 'Darwin':
-                        summaryFilePath = summaryFilePath.replace('\\','/')
                     summaryFile = open(summaryFilePath, "w")
                     summaryFile.writelines(summarySentences)
                     summaryFile.close()
@@ -198,8 +190,7 @@ class AlDocSummarizer():
         titleBar.bind("<Button-3>", showScreen)
         titleBar.bind("<Map>", screenAppear)
 
-        if systemName == 'Windows':
-            liftWindow()
+        liftWindow()
         root.mainloop()
 
 
